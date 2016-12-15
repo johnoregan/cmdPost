@@ -1,8 +1,8 @@
 #cmdPost
 
-If you can answer 'Yes!' to the following questions:
+If you can answer &lsquo;Yes!&rsquo; to the following questions:
 
-* Are you running [Windows] (XP or later)?
+* Are you running [Windows XP][windows] or later?
 * Do you write in [markdown] and use [Pandoc] to convert to [HTML]?
 * Have you admin access to a [WordPress.com][wp] blog?
 
