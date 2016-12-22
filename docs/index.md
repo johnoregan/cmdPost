@@ -1,4 +1,4 @@
-#cmdPost
+# cmdPost
 
 If you can answer &lsquo;Yes!&rsquo; to the following questions:
 
@@ -8,7 +8,7 @@ If you can answer &lsquo;Yes!&rsquo; to the following questions:
 
 then Command Post (cmdPost for short) is for you!
 
-##What Is It?
+## What Is It?
 
 cmdPost opens a markdown file specified by the user and looks for a specially
 formatted header block at the start of the file. It scans the header for _meta
@@ -21,10 +21,10 @@ Lastly, the meta information extracted from the header block along with the HTML
 is assembled into an [XML] document, which is posted to the WordPress.com blog
 specified by the user.
 
-##Is That All?
+## Is That All?
 
-Okay, there's a bit more to it than that! :smile: But I don't want to get bogged
-down in detail in this README. More details to follow in future releases.
+Okay, there's a bit more to it than that! :smiley: More details to follow in
+future releases.
 
 [windows]: http://windows.microsoft.com/
 [markdown]: http://daringfireball.net/projects/markdown/
