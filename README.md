@@ -7,4 +7,4 @@ Please visit the [Command Post][cmdpost] website for full documentation.
 
 [wp]: https://wordpress.com/
 [windows]: http://windows.microsoft.com/
-cmdpost: https://johnoregan.github.io/cmdPost/
+[cmdpost]: https://johnoregan.github.io/cmdPost/
