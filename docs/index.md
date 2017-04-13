@@ -23,8 +23,8 @@ specified by the user.
 
 ## Is That All?
 
-Okay, there's a bit more to it than that! :smiley: More details to follow in
-future releases.
+Okay, there's a bit more to it than that! :smiley: More details to follow in a
+future release&hellip; coming soon! :wink:
 
 [windows]: http://windows.microsoft.com/
 [markdown]: http://daringfireball.net/projects/markdown/
