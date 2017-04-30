@@ -1,20 +1,113 @@
 @if (@X==@Y) @then
 :: Batch
 @echo off & setlocal enableextensions disabledelayedexpansion
-(call;)
+(call;) %= resets errorlevel to 0 =%
+(set lf=^
+%= empty line required =%
+) %= Line Feed =%
+(set nl=^^^%lf%%lf%^%lf%%lf%) %= newline =%
 
-cscript //nologo //e:jscript "%~dpf0" "%~dpf1"
+:: if "%cd%\"=="%~dp0" (
+:: >&2 echo("%~nx0" cannot be run from the current folder
+:: goto die
+:: ) %= if =%
 
-endlocal & exit /b %errorlevel%
+set "nlFile=%tmp%\crlf.tmp"
+echo(>"%nlFile%"
+for %%F in ("%nlFile%") do if %%~zF neq 2 (
+>&2 echo("%~nx0" must be run from cmd in ANSI mode (type 'cmd /?' for ^
+more info^)
+goto die
+) %= if =%
+
+set "cfgFile=blog.cfg" & set "ansFile=%tmp%\YesNo.tmp"
+if not exist "%cd%\%cfgFile%" (
+>&2 echo("%cfgFile%" not found in "%cd%"
+>&2 set /p ^"=Do you wish to ccreate a "%cfgFile%" file in this folder? ^
+[Y/N]  ^" <nul
+type nul >"%ansFile%"
+del /p "%ansFile%" >nul
+if not exist "%ansFile%" (
+2>nul (type nul >"%cd%\%cfgFile%") || (
+>&2 echo(could not create "%cfgFile%" in "%cd%" & goto die) %= alt exec =%
+) else (>&2 echo(a "%cfgFile%" file in the current folder is required
+goto die) %= if 2 =%
+) %= if 1 =%
+
+:: read parameter values from command line
+set /a paramC=0,paramMax=1,paramMax+=1
+set "paramEnd=" & set "pFile=%tmp%\param.tmp"
+:params
+set /a paramC+=1 & set "paramN="
+if %paramC% equ %paramMax% set "paramEnd=1"
+
+for %%A in (%%A) do (
+setlocal disableextensions
+set prompt=@
+echo on
+for %%B in (%%B) do (
+@goto skip
+rem # %1 #
+)
+:skip
+@echo off
+endlocal
+) >"%pFile%"
+
+for /f %%A in ('find /c /v "" ^<"%pFile%"') ^
+do if %%A neq 5 if not defined paramEnd (
+>&2 echo(multiline parameter values not supported & goto die
+) else goto last
+
+for /f "usebackq skip=3 delims=" %%A in ("%pFile%") do if not defined paramN (
+set "paramN=%%A"
+(for /f "delims=" %%B in (
+'cmd /v:on /c "echo(^!paramN:~7,-3^!"'
+) do if not defined paramEnd set "paramN=%%~B") || (
+set /a paramC-=1 & goto last)
+)
+
+if defined paramN (
+if not "%paramN:"=""%"=="%paramN:"=%" if not defined paramEnd (
+>&2 echo(quotes (^"^) in parameter values not supported
+goto die) else goto last) else if not defined paramEnd (
+>&2 echo(empty parameter values (""^) not supported
+goto die) else goto last
+
+if not defined paramEnd (set "param%paramC%=%paramN%"
+shift /1 & goto params)
+
+:last
+set /a paramMax-=1 & set "paramN=" & set "paramEnd="
+if %paramC% equ 0 (
+>&2 echo(no parameter values found
+goto die
+) else if %paramC% gtr %paramMax% (
+>&2 echo(too many parameter values specified (max=%paramMax%^)
+goto die
+)
+
+cscript //nologo //e:jscript "%~dpf0" "%param1%"
+if errorlevel 1 (goto die) else goto end
+
+:die
+(call)
+:end
+endlocal & goto :EOF
 
 @end // JScript
 
 // functions:
+// writes error msg to StdErr and exits script with error code 1 by default
+function errMsg(errStr, errCode) {
+    WScript.StdErr.WriteLine(errStr);
+    if (errCode !== undefined) WSH.Quit(errCode);
+} // errMsg
+
 // returns string holding ccontents of file
 function readFile(filename) {
     if (!fso.FileExists(filename)) {
-        WSH.StdErr.WriteLine('file not found: "' + filename + '"');
-        WSH.Quit(1);
+        errMsg('file not found: "' + filename + '"', 1);
     } // if
     var fileObj = fso.OpenTextFile(filename, 1, false, 0),
         lines = '';
@@ -258,89 +351,97 @@ function findLineNo(text, pattern) {
 
 // validate key-value pairs in header block
 function valHdrs(filename, lines) {
-    filename = filename.replace(/\\(.+)$/, '$1');
-    var errFlag = 1,
-        offset = 2,
-        hdrLines = '';
-    if (!(/\.log/i.test(filename)) && !(/^blog\.cfg$/i.test(filename))) {
+    filename = filename.replace(/\\(.+)$/, '$1').toLowerCase();
+    var errFlag = true, offset = 2, hdrLines = '';
+
+    if (!(/^(?:blog\.cfg|posts\.log)$/i.test(filename))) {
         switch (true) {
-            case !(/^---\n/.test(lines)):
-                WSH.StdErr.WriteLine('error on line 1 of file "' + filename +
+            case !/^---\n/.test(lines):
+                errMsg('error on line 1 of file "' + filename +
                     '":\n' +
                     'missing start of header block');
                 break;
+
             case /^---\n---\n/.test(lines):
-                WSH.StdErr.WriteLine('error on line 2 of file "' + filename +
+                errMsg('error on line 2 of file "' + filename +
                     '":\n' +
                     'empty header block');
                 break;
-            case !(/^---\n(?:.+\n)+---\n/.test(lines)):
+
+            case !/^---\n(?:.+\n)+---\n/.test(lines):
                 lineNo = findLineNo(lines, /./);
-                WSH.StdErr.WriteLine('error on line ' + (lineNo + 1) +
+                errMsg('error on line ' + (lineNo + 1) +
                     ' of file "' +
                     filename + '":\n' +
                     'blank lines not supported in header block');
                 break;
-            case !(
-                /^---\n(?:(?:[^-].*\n)|(?:-(?:[^-].*\n|\n))|(?:--(?:[^-].*\n|\n))|(?:---.+\n))+---\n/
-                .test(lines)):
-                WSH.StdErr.WriteLine('error in file "' + filename + '":\n' +
+
+            case !/^---\n(?:(?:[^-].*\n)|(?:-(?:[^-].*\n|\n))|(?:--(?:[^-].*\n|\n))|(?:---.+\n))+---\n/
+                .test(lines):
+                errMsg('error in file "' + filename + '":\n' +
                     'missing end of header block');
                 break;
-            case !(/^---\n(?:.+\n)+---\n\n/.test(lines)):
+
+            case !/^---\n(?:.+\n)+---\n\n/.test(lines):
                 lineNo = findLineNo(lines.replace('---\n', ''), /^(?!---$).*$/);
-                WSH.StdErr.WriteLine('error on line ' + (lineNo + 3) +
+                errMsg('error on line ' + (lineNo + 3) +
                     ' of file "' +
                     filename + '":\n' +
                     'blank line required after header block');
                 break;
+
             default:
-                errFlag = 0;
+                errFlag = false;
                 break;
         } // switch
-        errFlag ? WSH.Quit(1) : errFlag = 1;
-        hdrLines = lines.
-        match(
-            /^---\n((?:(?:[^-].*\n)|(?:-(?:[^-].*\n|\n))|(?:--(?:[^-].*\n|\n))|(?:---.+\n))+)---\n/
-        )[1];
-    } else {
-        offset--;
-        hdrLines = lines;
-    }
+        errFlag ? WSH.Quit(1) : errFlag = true;
+hdrLines = lines.match(
+/^---\n((?:(?:[^-].*\n)|(?:-(?:[^-].*\n|\n))|(?:--(?:[^-].*\n|\n))|(?:---.+\n))+)---\n/
+)[1];
+} else {
+offset--;
+hdrLines = lines;
+    } // if
+
     switch (true) {
-        case !(/^(?:.+\n)+$/.test(hdrLines)):
-            lineNo = findLineNo(lines, /./);
-            WSH.StdErr.WriteLine('error on line ' + (lineNo + 1) + ' of file "' +
-                filename + '":\n' + 'blank lines not supported');
+        case !/^(?:.+\n)+$/.test(hdrLines):
+            lineNo = findLineNo(hdrLines, /./);
+            errMsg('error on line ' + (lineNo + 1) + ' of file "' +
+                filename + '":\n' + 'blank hdrLines not supported');
             break;
-        case !(/^(?:.*:.*\n)+$/.test(hdrLines)):
+
+case !/^(?:.*:.*\n)+$/.test(hdrLines):
             lineNo = findLineNo(hdrLines, /:/);
-            WSH.StdErr.WriteLine('error on line ' + (lineNo + offset) +
+            errMsg('error on line ' + (lineNo + offset) +
                 ' of file "' +
                 filename + '":\n' + 'separator (:) not found');
             break;
-        case !(/^(?:[a-z0-9](?:[_-](?=[a-z0-9])|[a-z0-9])*:.*\n)+$/.test(
-            hdrLines)):
+
+        case !/^(?:[a-z0-9](?:[_-](?=[a-z0-9])|[a-z0-9])*:.*\n)+$/.test(
+            hdrLines):
             lineNo = findLineNo(hdrLines,
                 /^[a-z0-9](?:[_-](?=[a-z0-9])|[a-z0-9])*:/);
-            WSH.StdErr.WriteLine('error on line ' + (lineNo + offset) +
+            errMsg('error on line ' + (lineNo + offset) +
                 ' of file "' +
                 filename + '":\n' + 'missing or badly formed key');
             break;
-        case !(/^(?:[a-z0-9_-]{1,20}:.*\n)+$/.test(hdrLines)):
+
+        case !/^(?:[a-z0-9_-]{1,20}:.*\n)+$/.test(hdrLines):
             lineNo = findLineNo(hdrLines, /^[a-z0-9_-]{1,20}:/);
-            WSH.StdErr.WriteLine('error on line ' + (lineNo + offset) +
+            errMsg('error on line ' + (lineNo + offset) +
                 ' of file "' +
                 filename + '":\n' + 'key too long (20 char max)');
             break;
-        case !(/^(?:[^:]+:[ \t]+.+\n)+$/.test(hdrLines)):
+
+        case !/^(?:[^:]+:[ \t]+.+\n)+$/.test(hdrLines):
             lineNo = findLineNo(hdrLines, /^.+?:[ \t]+.+$/);
-            WSH.StdErr.WriteLine('error on line ' + (lineNo + offset) +
+            errMsg('error on line ' + (lineNo + offset) +
                 ' of file "' +
                 filename + '":\n' + 'missing or badly formed value');
             break;
+
         default:
-            errFlag = 0;
+            errFlag = false;
             break;
     } // switch
     if (errFlag) WSH.Quit(1);
@@ -353,17 +454,16 @@ function valHdrs(filename, lines) {
         if (hdrHash[key] == undefined) {
             hdrHash[key] = hdrArray[i].match(/^.+?:[ \t]+(.+)$/)[1];
         } else {
-            WSH.StdErr.WriteLine('error on line ' + (i + 1) + ' of file "' +
+            errMsg('error on line ' + (i + 1) + ' of file "' +
                 filename +
-                '":\nkey "' + key + '" already defined');
-            WSH.Quit(1);
+                '":\nkey "' + key + '" already defined', 1);
         } // if
         i++
     } // while
     return hdrHash;
 } // valHdrs
 
-// doubles backslashes and converts all &, <, and > symbols into HTML entities
+// doubles backslashes and converts all &, <, and > symbols to HTML entities
 function Entify(str) {
     return str.replace(/\\/g, '\\\\').replace(/&/g, '&amp;')
         .replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -375,12 +475,13 @@ function Memberise(hdrName, hdrValue) {
         '</value></member>\n';
 } // Memberise
 
-// validate date-time string
-function valDateTime(dtStr) {
+// validates local date-time string
+function valDate(dtStr) {
+    var valDTStr = dtStr.replace(/[ \t]+/g, ' ').toUpperCase();
     if (!(
-            /^\d{4}\/\d\d\/\d\d \d\d:\d\d(?::\d\d)?(?: utc(?:[+-](?:[1-9]|1[012]))?)?$/i
-            .test(dtStr))) {
-        WScript.StdErr.WriteLine('date-time must be in the format:\r\n\r\n' +
+            /^\d{4}\/\d\d\/\d\d \d\d:\d\d(?::\d\d)?(?: UTC(?:[+-](?:[1-9]|1[012]))?)?$/
+            .test(valDTStr))) {
+        errMsg('date-time must be in the format:\r\n\r\n' +
             '  yyyy/mm/dd HH:MM[:SS][ UTC[(+/-)1-12]]\r\n\r\n' +
             'where the values have the following ranges:\r\n\r\n' +
             ' yyyy:  1000 - 9999\r\n' +
@@ -392,11 +493,36 @@ function valDateTime(dtStr) {
             'and timezone must be in one of the following formats:\r\n\r\n' +
             '  UTC\r\n' +
             '  UTC+[1-12]\r\n' +
-            '  UTC-[1-12]');
-        WSH.Quit(1);
+            '  UTC-[1-12]', 1);
+    } else {
+        return valDTStr;
+    } // if
+} // valDate
+
+// returns string in ISO 8601 format
+function ldt2ISO(dtStr) {
+/*
+    if (!(
+            /^\d{4}\/\d\d\/\d\d \d\d:\d\d(?::\d\d)?(?: utc(?:[+-](?:[1-9]|1[012]))?)?$/i
+            .test(dtStr))) {
+        errMsg('date-time must be in the format:\r\n\r\n' +
+            '  yyyy/mm/dd HH:MM[:SS][ UTC[(+/-)1-12]]\r\n\r\n' +
+            'where the values have the following ranges:\r\n\r\n' +
+            ' yyyy:  1000 - 9999\r\n' +
+            '    mm:  01 - 12\r\n' +
+            '    dd:  01 - 31\r\n' +
+            '    HH:  00 - 23\r\n' +
+            '    MM:  00 - 59\r\n' +
+            '    SS:  00 - 59\r\n\r\n' +
+            'and timezone must be in one of the following formats:\r\n\r\n' +
+            '  UTC\r\n' +
+            '  UTC+[1-12]\r\n' +
+            '  UTC-[1-12]', 1);
     } else {
         var valDTStr = dtStr.toUpperCase();
     }
+*/
+    var errFlag = true;
     var y4Str = dtStr.substr(0, 4);
     var monStr = dtStr.substr(5, 2);
     var dayStr = dtStr.substr(8, 2);
@@ -412,77 +538,88 @@ function valDateTime(dtStr) {
         }
     }
     if (dtStr != '') tzStr = dtStr.substr(1).toUpperCase();
-    var errFlag = 0;
     switch (false) {
         case /^[1-9][0-9]{3}$/.test(y4Str):
-            WScript.StdErr.WriteLine('year must be within range of 1000-9999');
-            errFlag = 1;
+            errMsg('year must be within range of 1000-9999');
             break;
+
         case /^0[1-9]|1[012]$/.test(monStr):
-            WScript.StdErr.WriteLine('month must be within range of 01-12');
-            errFlag = 1;
+            errMsg('month must be within range of 01-12');
             break;
+
         case /^0[1-9]|[12][0-9]|3[01]$/.test(dayStr):
-            WScript.StdErr.WriteLine('day must be within range of 01-31');
-            errFlag = 1;
+            errMsg('day must be within range of 01-31');
             break;
+
         case /^[01][0-9]|2[0-3]$/.test(hrStr):
-            WScript.StdErr.WriteLine('hours must be within range of 00 - 23');
-            errFlag = 1;
+            errMsg('hours must be within range of 00 - 23');
             break;
+
         case /^[0-5][0-9]$/.test(minStr):
-            WScript.StdErr.WriteLine('minutes must be within range of 00 - 59');
-            errFlag = 1;
+            errMsg('minutes must be within range of 00 - 59');
             break;
+
         case /^[0-5][0-9]$/.test(secStr):
-            WScript.StdErr.WriteLine('seconds must be within range of 00 - 59');
-            errFlag = 1;
+            errMsg('seconds must be within range of 00 - 59');
             break;
+
         default:
+            errFlag = false;
             break;
     } // switch
-    if (errFlag) WSH.Quit(1);
+    errFlag ? WSH.Quit(1) : errFlag = true;
     switch (monStr) {
         case '04':
         case '06':
         case '09':
         case '11':
             if (dayStr == '31') {
-                WScript.StdErr.WriteLine('Apr, Jun, Sep, and Nov have 30 days');
-                errFlag = 1;
+                errMsg('Apr, Jun, Sep, and Nov have 30 days');
+            } else {
+                errFlag = false;
             }
             break;
+
         case '02':
             if (/^3[01]$/.test(dayStr)) {
-                WScript.StdErr.WriteLine('Feb has 28 days (29 in a leap year)');
-                errFlag = 1;
+                errMsg('Feb has 28 days (29 in a leap year)');
             } else if (dayStr == '29' && new Date(y4Str, 1, 29).getDate() - 29) {
-                WScript.Echo(y4Str + ' is not a leap year');
-                errFlag = 1;
+                errMsg(y4Str + ' is not a leap year');
+            } else {
+                errFlag = false;
             }
             break;
+
         default:
+            errFlag = false;
             break;
     } // switch
     if (errFlag) WSH.Quit(1);
     return y4Str + '' + monStr + '' + dayStr + 'T' +
         hrStr + ':' + minStr + ':' + secStr;
-} // valDateTime
+} // ldt2ISO
 
-// converts local date-time string to GMT/UTC
-function ldt2GMT(ldtStr) {
-//    var ldt = new Date(ldtStr.substr(0, 4) + '/' + ldtStr.substr(4, 2) + '/' +
-//        ldtStr.substr(6, 2) + ' ' + ldtStr.substr(9));
+// converts local date-time string to UTC in ISO 8601 format
+function ldt2UTC(ldtStr) {
     var ldt = new Date(ldtStr);
-    var gmtYear = ldt.getUTCFullYear();
-    var gmtMon = padStr(ldt.getUTCMonth() + 1);
-    var gmtDate = padStr(ldt.getUTCDate());
-    var gmtHour = padStr(ldt.getUTCHours());
-    var gmtMin = padStr(ldt.getUTCMinutes());
-    var gmtSec = padStr(ldt.getUTCSeconds());
-    return gmtYear + '' + gmtMon + '' + gmtDate + 'T' +
-        gmtHour + ':' + gmtMin + ':' + gmtSec;
-} // ldt2GMT
+    var utcYear = ldt.getUTCFullYear();
+    var utcMon = padStr(ldt.getUTCMonth() + 1);
+    var utcDate = padStr(ldt.getUTCDate());
+    var utcHour = padStr(ldt.getUTCHours());
+    var utcMin = padStr(ldt.getUTCMinutes());
+    var utcSec = padStr(ldt.getUTCSeconds());
+    return utcYear + '' + utcMon + '' + utcDate + 'T' +
+        utcHour + ':' + utcMin + ':' + utcSec;
+} // ldt2UTC
+
+// returns current date-time as UTC string
+function now2UTCStr() {
+    var now = new Date();
+    return now.getUTCFullYear() + '/' + padStr(now.getUTCMonth() + 1) + '/' +
+        padStr(now.getUTCDate()) + ' ' + padStr(now.getUTCHours()) + ':' +
+        padStr(now.getUTCMinutes()) + ':' + padStr(now.getUTCSeconds()) +
+        ' UTC';
+} // now2UTCStr
 
 // converts multiline string to hash
 function str2Hash(str) {
@@ -529,20 +666,16 @@ function mkd2HTML(filename) {
     // enabled extensions
     extsOn = '+emoji+mmd_title_block';
     // pandoc cmd to generate html from markdown
-    pd2HTML = WshShell.Exec('pandoc ' + pdOpts + ' -f markdown' +
+    pd2HTML = shell.Exec('pandoc ' + pdOpts + ' -f markdown' +
         extsOff + extsOn + ' -t html "' + filename + '"');
     htmlLines = pd2HTML.StdOut.ReadAll();
-    if (pd2HTML.ExitCode) {
-        WSH.StdErr.WriteLine('pandoc error');
-        WSH.Quit(1);
-    }
+    if (pd2HTML.ExitCode) errMsg('pandoc error', 1);
     // zap any carriage returns
     htmlLines = htmlLines.replace(/\r+/g, '')
         // strip any trailing  spaces or tabs
         .replace(/[ \t]+\n/g, '\n')
         // hack to prevent autolinking of email & web addresses
-        .replace(/(?:\&amp;#64;|\&amp;amp;#64;)/ig, '&#64;')
-        .replace(/(?:\&amp;#46;|\&amp;amp;#46;)/ig, '&#46;')
+        .replace(/(?:\&amp;(?:amp;)?)(#?\w+);/ig, '&$1;')
         // remove any trailing newlines from opening HTML tags
         .replace(/\n+((?:<[\w-]+[^>\n]*?>)+)\n+/g, '\n$1')
         .replace(/((?:<[\w-]+[^>\n]*?>)+)\n+((?:<[\w-]+[^>\n]*?>)+)/g, '$1$2')
@@ -573,35 +706,40 @@ function mkd2HTML(filename) {
 
 // validate list of tags
 function valTags(tagList) {
+    var errFlag = true;
+
     switch (true) {
-        case !(/^[a-z0-9 \t,_-]+$/.test(tagList)):
-            WScript.StdErr.WriteLine(
+        case !/^[a-z0-9 \t,'_-]+$/.test(tagList):
+            errMsg(
                 'list of tags may contain the following characters:\r\n' +
-                'a-z (lowercase only) 0-9, space, tab, comma, -, and _');
-            WSH.Quit(1);
+                'a-z (lowercase only) 0-9, space, tab, comma, \', -, and _');
             break;
+
         case /^(?:[ \t]+)?,|,(?:[ \t]+)?$/g.test(tagList):
-            WScript.StdErr.WriteLine('leading/trailing commas in list of tags');
-            WSH.Quit(1);
-            break;
+            errMsg('leading/trailing commas in list of tags');
+        break;
+
         case /,(?:[ \t]+)?,/g.test(tagList):
-            WScript.StdErr.WriteLine(
+            errMsg(
                 'two or more consecutive commas found in list of tags');
-            WSH.Quit(1);
             break;
-        case /,(?:[ \t]+)?[_-]|[_-](?:[ \t]+)?,/.test(',' + tagList + ','):
-            WScript.StdErr.WriteLine('tags may not begin or end with _ or -');
-            WSH.Quit(1);
-            break;
-        case /[_-]{2,}/.test(tagList):
-            WScript.StdErr.WriteLine(
-                'tags may not contain two or more consecutive _ or - chars'
+
+        case /,(?:[ \t]+)?['_-]|['_-](?:[ \t]+)?,/.test(',' + tagList + ','):
+            errMsg('tags may not begin or end with: \' _ or -');
+        break;
+
+        case /['_-]{2,}/.test(tagList):
+            errMsg(
+                'tags may not contain two or more consecutive \', _, or - chars'
             );
-            WSH.Quit(1);
             break;
+
         default:
+            errFlag = false;
             break;
     } // switch
+    if (errFlag) WSH.Quit(1);
+
     var tagArr = tagList.split(','),
         i;
     for (i = 0; i < tagArr.length; i++) {
@@ -615,47 +753,51 @@ function valTags(tagList) {
     }
     uniqTags.push(tagArr[tagArr.length - 1]);
     if (tagArr.length > uniqTags.length) {
-        WScript.StdErr.WriteLine(
-            'same tag occurred more than once in list of tags');
-        WSH.Quit(1);
+        errMsg(
+            'same tag occurred more than once in list of tags', 1);
     }
     return tagArr;
 } // valTags
 
 // validate list of categories
 function valCats(catList) {
+    var errFlag = true;
+
     switch (true) {
-        case !(/^[a-zA-Z0-9 \t,&_-]+$/.test(catList)):
-            WScript.StdErr.WriteLine(
+        case !/^[a-zA-Z0-9 \t,'_-]+$/.test(catList):
+            errMsg(
                 'list of categories may contain the following characters:\r\n' +
-                'a-z, A-Z, 0-9, space, tab, comma, &, -, and _');
-            WSH.Quit(1);
+                'a-z, A-Z, 0-9, space, tab, comma, \', -, and _');
             break;
+
         case /^(?:[ \t]+)?,|,(?:[ \t]+)?$/g.test(catList):
-            WScript.StdErr.WriteLine(
+            errMsg(
                 'leading/trailing commas in list of categories');
-            WSH.Quit(1);
             break;
+
         case /,(?:[ \t]+)?,/g.test(catList):
-            WScript.StdErr.WriteLine(
+            errMsg(
                 'two or more consecutive commas found in list of categories'
             );
-            WSH.Quit(1);
             break;
-        case /,(?:[ \t]+)?[&_-]|[&_-](?:[ \t]+)?,/.test(',' + catList + ','):
-            WScript.StdErr.WriteLine(
-                'categories may not begin or end with &, _, or -');
-            WSH.Quit(1);
+
+        case /,(?:[ \t]+)?['_-]|['_-](?:[ \t]+)?,/.test(',' + catList + ','):
+            errMsg(
+                'categories may not begin or end with \', _, or -');
             break;
-        case /[&_-]{2,}/.test(catList):
-            WScript.StdErr.WriteLine(
-                'categories may not contain two or more consecutive &, _, or - chars'
+
+        case /['_-]{2,}/.test(catList):
+            errMsg(
+                'categories may not contain two or more consecutive \', _, or - chars'
             );
-            WSH.Quit(1);
             break;
+
         default:
+            errFlag = false;
             break;
     } // switch
+    if (errFlag) WSH.Quit(1);
+
     var catArr = catList.split(','),
         i;
     for (i = 0; i < catArr.length; i++) {
@@ -671,33 +813,105 @@ function valCats(catList) {
     }
     uniqCats.push(catArr[catArr.length - 1]);
     if (catArr.length > uniqCats.length) {
-        WScript.StdErr.WriteLine(
-            'same category occurred more than once in list of categories');
-        WSH.Quit(1);
+        errMsg(
+            'same category occurred more than once in list of categories', 1);
     }
     return catArr;
 } // valCats
 
 // main program
 // objects and variables:
-var args = WScript.Arguments,
-    fso = WScript.CreateObject('Scripting.FileSystemObject'),
-    WshShell = WScript.CreateObject('WScript.Shell'),
+var fso = WScript.CreateObject('Scripting.FileSystemObject'),
+    shell = WScript.CreateObject('WScript.Shell'),
     xmlObj = WScript.CreateObject('MSXML2.XMLHTTP'),
-    cfgFile = 'blog.cfg',
+    args = WScript.Arguments, cfgFile = 'blog.cfg',
     logFile = 'posts.log',
     logObj,
     cfgLines = '',
     mkdLines = '',
-    errFlag = 1,
     lineNo = 0,
-    mkdFile = args(0).replace(/^.+\\(.+)$/, '$1');
+//    mkdFile = args(0).replace(/^.+\\(.+)$/, '$1'),
+arg1, key, i, option,
+errFlag = true;
+
+arg1 = args(0);
+switch (true) {
+case arg1.substr(0,1) == '/':
+    var sw1Arr = '/?,/h,/hlp,/help'.split(','),
+        swHash = {help: sw1Arr};
+
+    outer: for (key in swHash)
+        for (i = 0; i < swHash[key].length; i++)
+            if (swHash[key][i] == arg1.toLowerCase()) {
+                option = key;
+                break outer;
+            } // for outer
+
+    if (option == 'help') {
+        errMsg('usage: cmdPost filename.md');
+    } else {
+        errMsg('unknown switch: "' + arg1 + '"');
+    } // if
+    break;
+
+case /[*?]+/.test(arg1):
+        errMsg('wildcards (* and ?) not supported: "' + arg1 + '"');
+        break;
+
+case fso.FolderExists(arg1):
+    errMsg('"' + arg1 + '" is a folder');
+    break;
+
+case !fso.FileExists(arg1):
+    errMsg('file "' + arg1 + '" not found');
+    break;
+
+case /\\/.test(arg1):
+    errMsg('file must be in the current folder: "' + shell.CurrentDirectory + '"');
+    break;
+
+case (arg1.length > 64):
+    errMsg('filename is too long (64 chars max): "' + arg1 + '"');
+    break;
+
+case !/^[a-zA-Z0-9._-]+$/.test(arg1):
+    errMsg('filenames must consist entirely of lowercase (a-z) and ' +
+           'uppercase (A-Z) letters,\ndigits (0-9), dots (.), underscores ' +
+           '(_), and dashes (-)');
+        break;
+
+case !/^[a-zA-Z0-9]+(?:[_-]?[a-zA-Z0-9]+)*\.[a-zA-Z0-9]+$/.test(arg1):
+        errMsg('filename did not match required pattern:\n' +
+               '  [a-zA-Z]+ ([_-]? [a-zA-Z0-9]+)* \\. [a-zA-Z0-9]+');
+    break;
+
+case !/\.(md|mkd|txt)$/i.test(arg1):
+    errMsg('filename must have ".md", ".mkd", or ".txt" extension');
+    break;
+
+case fso.GetFile(arg1).Size == 0:
+    errMsg('file "' + arg1 + '" is empty');
+    break;
+
+case fso.GetFile(arg1).Size > Math.pow(2, 26):
+    errMsg('file "' + arg1 + '" is too large (64Mb max)');
+    break;
+
+default:
+    mkdFile = arg1;
+    errFlag = false;
+    break;
+} // switch
+if (errFlag) WSH.Quit(1);
+// if (option == null) WSH.Echo(mkdFile);
+
 // read in config file
 cfgLines = readFile(cfgFile);
 // strip trailing whitespace and ensure 1 newline at eof
 cfgLines = cfgLines.replace(/[ \t]+\n/g, '\n').replace(/\n*$/, '\n');
 cfgHash = valHdrs(cfgFile, cfgLines);
 var req = 0;
+// errMsg('blog.cfg: ' + errFlag);
 for (key in cfgHash) {
     switch (key) {
         case 'username':
@@ -706,15 +920,15 @@ for (key in cfgHash) {
             req++;
             break;
         default:
-            WSH.StdErr.WriteLine('unknown key: ' + key);
-            WSH.Quit(1);
+            errMsg('unknown key: ' + key, 1);
+            errFlag = true;
             break;
     } // switch
+    if (errFlag) WSH.Quit(1);
 } // for
 if (req < 3) {
-    WSH.StdErr.WriteLine(
-        'one or more required entries missing from config file');
-    WSH.Quit(1);
+    errMsg(
+        'one or more required entries missing from config file', 1);
 }
 // read in markdown file
 mkdLines = readFile(mkdFile);
@@ -726,8 +940,7 @@ mkdHash = valHdrs(mkdFile, mkdLines);
 var bodyLines = mkdLines.replace(/^---\n(?:.+\n)+---\n/, '');
 bodyLines = bodyLines.replace(/^\n+|\n+$/g, '');
 if (bodyLines == '') {
-    WSH.StdErr.Writeline('missing body in input file');
-    WSH.Quit(1);
+    errMsg('missing body in input file', 1);
 }
 key = '', req = 0;
 for (key in mkdHash) {
@@ -737,6 +950,7 @@ for (key in mkdHash) {
         case 'categories':
             req++;
             break;
+
         case 'author':
         case 'status':
         case 'comments':
@@ -745,24 +959,25 @@ for (key in mkdHash) {
         case 'format':
         case 'tags':
             break;
+
         default:
-            WSH.StdErr.WriteLine('unknown key: ' + key);
-            WSH.Quit(1);
+            errMsg('unknown key: ' + key);
+            errFlag = true;
             break;
     } //switch
+    if (errFlag) WSH.Quit(1);
 } // for
 if (req < 3) {
-    WSH.StdErr.WriteLine('one or more required entries missing from "' +
-        mkdFile + '"');
-    WSH.Quit(1);
+    errMsg('one or more required entries missing from "' +
+        mkdFile + '"', 1);
 }
 // add md5 hash of body of markdown file
 mkdHash['md5'] = MD5(bodyLines);
 // process log file
 var newPost = false,
     editPost = false,
-    maxLogSize = Math.pow(2, 30),
-    warnLogSize = Math.pow(2, 26) * 15,
+    maxLogSize = Math.pow(2, 26),
+    warnLogSize = Math.pow(2, 22) * 15,
     logSize = fso.GetFile(logFile).size,
     lines = '',
     postsArr = [],
@@ -770,12 +985,12 @@ var newPost = false,
     i = 0,
     j = 0,
     entHash = {};
+
 if (logSize < maxLogSize && logSize > warnLogSize) {
-    WSH.StdErr.WriteLine('WARNING: "' + logFile +
+    errMsg('WARNING: "' + logFile +
         '" is becoming unmanageably large');
 } else if (logSize > maxLogSize) {
-    WSH.StdErr.WriteLine('"' + logFile + '" is too large to process');
-    WSH.Quit(1);
+    errMsg('"' + logFile + '" is too large to process', 1);
 } // if
 // open log file and slurp up entire contents
 logObj = fso.OpenTextFile(logFile, 1, false, 0);
@@ -816,9 +1031,9 @@ if (!newPost) {
     } // for
 } // if 1
 var xmlStr = '<?xml version="1.0" encoding="US-ASCII"?>\n',
-    updHash = {};
-if (editPost) {
     updHash = mkdHash;
+if (editPost) {
+    // updHash = mkdHash;
     for (key in entHash) {
         if (updHash[key] == null) {
             updHash[key] = entHash[key];
@@ -831,11 +1046,10 @@ if (editPost) {
         '<param><value>' + updHash['postid'] + '</value></param>\n' +
         '<param><value><struct>\n';
 } else if (!newPost) {
-    WSH.StdErr.WriteLine('no changes detected since last update');
-    WSH.Quit(0);
+    errMsg('no changes detected since last update', 0);
 } // if 1
 if (newPost) {
-    updHash = mkdHash;
+    // updHash = mkdHash;
     xmlStr += '<methodCall><methodName>wp.newPost</methodName>\n' +
         '<params><param><value>0</value></param>\n' +
         '<param><value>' + cfgHash['username'] + '</value></param>\n' +
@@ -854,31 +1068,36 @@ for (key in updHash) {
         case 'updated':
         case 'editions':
             break;
+
         case 'md5':
             xmlStr += Memberise('post_content', Entify(mkd2HTML(mkdFile)));
             break;
+
         case 'title':
             xmlStr += Memberise('post_title', Entify(updHash[key]));
             break;
+
         case 'date':
-            var dtStr = updHash[key].replace(/[ \t]+/g, ' ').toUpperCase();
-            var ltStr = valDateTime(dtStr);
-            var gmtStr = ldt2GMT(dtStr);
+            var dtStr = valDate(updHash[key]);
+            var ltStr = ldt2ISO(dtStr);
+            var utcStr = ldt2UTC(dtStr);
+            updHash[key] = dtStr;
             xmlStr += Memberise('post_date', '<dateTime.iso8601>' + ltStr +
                 '</dateTime.iso8601>');
-            xmlStr += Memberise('post_date_gmt', '<dateTime.iso8601>' + gmtStr +
+            xmlStr += Memberise('post_date_gmt', '<dateTime.iso8601>' + utcStr +
                 '</dateTime.iso8601>');
             break;
+
         case 'status':
             if (!(/^(?:draft|future|pending|private|publish|trash)$/.test(
                     updHash[key]))) {
-                WSH.StdErr.WriteLine('unsupported value in "' + key +
+                errMsg('unsupported value in "' + key +
                     '" header');
-                WSH.Quit(1);
             } else {
                 xmlStr += Memberise('post_status', updHash[key]);
             }
             break;
+
         case 'comments':
         case 'pingbacks':
             if (key == 'comments') {
@@ -887,33 +1106,32 @@ for (key in updHash) {
                 var hdrName = 'ping_status';
             }
             if (updHash[key] != 'open' && updHash[key] != 'closed') {
-                WSH.StdErr.WriteLine('"' + key +
+                errMsg('"' + key +
                     '" must have a value of either "open" or "closed"');
-                WSH.Quit(1);
             } else {
                 xmlStr += Memberise(hdrName, updHash[key]);
             }
             break;
+
         case 'sticky':
             if (updHash[key] != '0' && updHash[key] != '1') {
-                WSH.StdErr.WriteLine('"' + key +
+                errMsg('"' + key +
                     '" must have a value of either "0" (default) or "1"');
-                WSH.Quit(1);
             } else {
                 xmlStr += Memberise(key, updHash[key]);
             }
             break;
+
         case 'format':
-            if (!(
-                    /^(?:standard|aside|audio|chat|gallery|image|link|quote|status|video)$/
-                    .test(updHash[key]))) {
-                WSH.StdErr.WriteLine('unsupported value in "' + key +
+            if (!/^(?:standard|aside|audio|chat|gallery|image|link|quote|status|video)$/
+                    .test(updHash[key])) {
+                errMsg('unsupported value in "' + key +
                     '" header');
-                WSH.Quit(1);
             } else {
                 xmlStr += Memberise('post_format', updHash[key]);
             }
             break;
+
         case 'categories':
             tcFlag = true;
             var catsArr = valCats(updHash[key]),
@@ -924,6 +1142,7 @@ for (key in updHash) {
             }
             catsStr += '</data></array></value></member>\n';
             break;
+
         case 'tags':
             tcFlag = true;
             var tagsArr = valTags(updHash[key]),
@@ -934,11 +1153,13 @@ for (key in updHash) {
             }
             tagsStr += '</data></array></value></member>\n';
             break;
+
         default:
-            WSH.Echo('unknown key: ' + key);
-            WSH.Quit(1);
+            errMsg('unknown key: ' + key);
+            errFlag = true;
             break;
     } // switch
+    if (errFlag) WSH.Quit(1);
 } // for
 if (tcFlag) {
     xmlStr += '<member><name>terms_names</name><value><struct>\n';
@@ -947,45 +1168,43 @@ if (tcFlag) {
     xmlStr += '</struct></value></member>\n';
 } // if
 xmlStr += '</struct></value></param></params></methodCall>\n';
-WSH.Echo('xmlStr: ' + xmlStr);
-/*
+// WSH.Echo('xmlStr: ' + xmlStr);
+
 // upload new/updated post
 xmlObj.Open('POST', cfgHash['endpoint'], false);
 xmlObj.setRequestHeader('Content-Type', 'text/xml');
 xmlObj.send(xmlStr);
 var status = xmlObj.status;
+
 // something went wrong if status not 200
 if (status != 200) {
-    WScript.StdErr.WriteLine('an error occurred while posting to blog:\r\n' +
+    errMsg('an error occurred while posting to blog:\r\n' +
         xmlObj.status + ': ' + xmlObj.statusText + '\r\n' +
-        xmlObj.responseText.match(/<string>(.+?)<\/string>/i)[1]);
-    WSH.Quit(1);
+        xmlObj.responseText.match(/<string>(.+?)<\/string>/i)[1], 1);
 } // if
+
 // let user know all went well
 if (newPost) {
-    WScript.StdErr.WriteLine('new post created');
+    errMsg('new post created');
 } else {
-    WScript.StdErr.WriteLine('existing post updated');
+    errMsg('existing post updated');
 } // if
+
 // create/update entry in log file
-var now = new Date();
-updHash['updated'] = now.getUTCFullYear() + '/' + padStr(now.getUTCMonth() + 1) +
-    '/' +
-    padStr(now.getUTCDate()) + ' ' + padStr(now.getUTCHours()) + ':' +
-    padStr(now.getUTCMinutes()) + ':' + padStr(now.getUTCSeconds()) + ' UTC';
+updHash['updated'] = now2UTCStr();
 if (newPost) {
     updHash['filename'] = mkdFile;
     updHash['postid'] = xmlObj.responseText.match(/<string>(.+?)<\/string>/i)[1];
-    updHash['utc'] = gmtStr.replace(/\D+/g, '');
+    // updHash['utc'] = utcStr.replace(/\D+/g, '');
     updHash['created'] = updHash['updated'];
     updHash['editions'] = 1;
 } else {
     updHash['editions']++;
 } // if
+
 // ensure entry written in correct order
-var ordArr = ['filename', 'postid', 'title', 'date', 'utc', 'status',
-    'comments', 'pingbacks', 'sticky', 'format', 'categories', 'tags',
-    'created',
+var ordArr = ['filename', 'postid', 'title', 'date', 'status', 'comments',
+    'pingbacks', 'sticky', 'format', 'categories', 'tags', 'created',
     'updated', 'editions'];
 postsArr[i] = '';
 for (j = 0; j < ordArr.length; j++) {
@@ -994,18 +1213,20 @@ for (j = 0; j < ordArr.length; j++) {
     } // if
 } // for
 postsArr[i] += 'md5: ' + updHash['md5'];
+
 // sort posts array based on utc date of each entry
 postsArr.sort(function(a, b) {
-    if (a.match(/\nutc: (\d+)\n/)[1] < b.match(/\nutc: (\d+)\n/)[1])
-        return -1;
-    if (a.match(/\nutc: (\d+)\n/)[1] > b.match(/\nutc: (\d+)\n/)[1])
-        return 1;
+    if (ldt2UTC(a.match(/\ndate: (.+)\n/)[1]).replace(/\D+/g, '') <
+        ldt2UTC(b.match(/\ndate: (.+)\n/)[1]).replace(/\D+/g, '')) return -1;
+    if (ldt2UTC(a.match(/\ndate: (.+)\n/)[1]).replace(/\D+/g, '')>
+        ldt2UTC(b.match(/\ndate: (.+)\n/)[1]).replace(/\D+/g, '')) return 1;
     return 0;
 }); // sort
+
 // write out updated log file
 logObj = fso.OpenTextFile(logFile, 2, false, 0);
 logObj.Write(postsArr.join('\r\n\r\n') + '\r\n');
 logObj.Close();
+
 // The End!
-*/
 WSH.Quit(0);
