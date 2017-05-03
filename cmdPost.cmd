@@ -6,11 +6,12 @@
 %= empty line required =%
 ) %= Line Feed =%
 (set nl=^^^%lf%%lf%^%lf%%lf%) %= newline =%
+set ^"\n=^^^%lf%%lf%^%lf%%lf%^^" %= continuation newline =%
 
-:: if "%cd%\"=="%~dp0" (
-:: >&2 echo("%~nx0" cannot be run from the current folder
-:: goto die
-:: ) %= if =%
+if "%cd%\"=="%~dp0" (
+>&2 echo("%~nx0" cannot be run from the current folder
+goto die
+) %= if =%
 
 set "nlFile=%tmp%\crlf.tmp"
 echo(>"%nlFile%"
@@ -31,6 +32,16 @@ if not exist "%ansFile%" (
 2>nul (type nul >"%cd%\%cfgFile%") || (
 >&2 echo(could not create "%cfgFile%" in "%cd%" & goto die) %= alt exec =%
 ) else (>&2 echo(a "%cfgFile%" file in the current folder is required
+goto die) %= if 2 =%
+) %= if 1 =%
+
+:: required external programs
+for %%X in ("fandoc.exe") do if "%%~$PATH:X"=="" (
+if /i "%%~nX"=="fandoc" (
+>&2 echo(Couldn't find Pandoc!%\n%
+* If installed, add Pandoc's location to %%PATH%%.%\n%
+* Otherwise, downloadd and install from:%\n%
+  https://github.com/jgm/pandoc/releases/
 goto die) %= if 2 =%
 ) %= if 1 =%
 
@@ -675,7 +686,7 @@ function mkd2HTML(filename) {
         // strip any trailing  spaces or tabs
         .replace(/[ \t]+\n/g, '\n')
         // hack to prevent autolinking of email & web addresses
-        .replace(/(?:\&amp;(?:amp;)?)(#?\w+);/ig, '&$1;')
+        .replace(/\&amp;(#?\w+);/ig, '&$1;')
         // remove any trailing newlines from opening HTML tags
         .replace(/\n+((?:<[\w-]+[^>\n]*?>)+)\n+/g, '\n$1')
         .replace(/((?:<[\w-]+[^>\n]*?>)+)\n+((?:<[\w-]+[^>\n]*?>)+)/g, '$1$2')

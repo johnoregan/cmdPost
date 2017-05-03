@@ -1,4 +1,4 @@
-#cmdPost
+# cmdPost
 
 Command Post (cmdPost for short) is a simple command line [WordPress.com][wp]
 blogging client that runs on [Windows].
