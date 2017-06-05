@@ -8,11 +8,13 @@
 (set nl=^^^%lf%%lf%^%lf%%lf%) %= newline =%
 set ^"\n=^^^%lf%%lf%^%lf%%lf%^^" %= continuation newline =%
 
+:: sanity check to prevent cmdPost being run from its own folder
 if "%cd%\"=="%~dp0" (
 >&2 echo("%~nx0" cannot be run from the current folder
 goto die
 ) %= if =%
 
+:: cmdPost supports 7-bit ASCII input/output
 set "nlFile=%tmp%\crlf.tmp"
 echo(>"%nlFile%"
 for %%F in ("%nlFile%") do if %%~zF neq 2 (
@@ -21,6 +23,7 @@ more info^)
 goto die
 ) %= if =%
 
+:: prompt user if blog.cfg file doesn't exist
 set "cfgFile=blog.cfg" & set "ansFile=%tmp%\YesNo.tmp"
 if not exist "%cd%\%cfgFile%" (
 >&2 echo("%cfgFile%" not found in "%cd%"
@@ -30,18 +33,24 @@ type nul >"%ansFile%"
 del /p "%ansFile%" >nul
 if not exist "%ansFile%" (
 2>nul (type nul >"%cd%\%cfgFile%") || (
->&2 echo(could not create "%cfgFile%" in "%cd%" & goto die) %= alt exec =%
+>&2 echo(could not create "%cfgFile%" in "%cd%" & goto die) %= cond exec =%
 ) else (>&2 echo(a "%cfgFile%" file in the current folder is required
 goto die) %= if 2 =%
 ) %= if 1 =%
 
+:: create posts.log file if it doesn't exist
+set "logFile=posts.log" & if not exist "%logFile%" (
+2>nul (type nul >"%cd%\%logFile%") && attrib +h "%logFile%" || (
+>&2 echo(could not create "%logFile%" in "%cd%" & goto die) %= cond exec =%
+) %= if =%
+
 :: required external programs
-for %%X in ("fandoc.exe") do if "%%~$PATH:X"=="" (
-if /i "%%~nX"=="fandoc" (
+for %%X in ("pandoc.exe") do if "%%~$PATH:X"=="" (
+if /i "%%~nX"=="pandoc" (
 >&2 echo(Couldn't find Pandoc!%\n%
 * If installed, add Pandoc's location to %%PATH%%.%\n%
 * Otherwise, downloadd and install from:%\n%
-  https://github.com/jgm/pandoc/releases/
+  https://github.com/jgm/pandoc/releases/latest
 goto die) %= if 2 =%
 ) %= if 1 =%
 
@@ -859,7 +868,9 @@ case arg1.substr(0,1) == '/':
             } // for outer
 
     if (option == 'help') {
-        errMsg('usage: cmdPost filename.md');
+        errMsg('Visit the cmdPost website:\n\n' +
+        '    https://johnoregan.github.io/cmdPost/\n\n' +
+        'for full documentation.\n');
     } else {
         errMsg('unknown switch: "' + arg1 + '"');
     } // if
@@ -1100,8 +1111,8 @@ for (key in updHash) {
             break;
 
         case 'status':
-            if (!(/^(?:draft|future|pending|private|publish|trash)$/.test(
-                    updHash[key]))) {
+            if (!/^(?:draft|pending|private|publish|trash)$/.test(updHash[key]))
+            {
                 errMsg('unsupported value in "' + key +
                     '" header');
             } else {
