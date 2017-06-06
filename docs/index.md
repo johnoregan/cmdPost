@@ -1,4 +1,6 @@
-## cmdPost Documentation
+---
+title: cmdPost Documentation
+---
 
 - [Introduction to cmdPost][intro]
 - [Installing cmdPost][install]

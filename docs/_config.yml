@@ -1,3 +1,6 @@
+layout: page
+title: cmdPost
+tagline: A WordPress.com Command Line Blogging Client for Windows
 theme: jekyll-theme-minimal
 gems:
   - jemoji
