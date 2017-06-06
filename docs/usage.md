@@ -1,6 +1,4 @@
-# Using cmdPost
-
-## Table of Contents
+## Using cmdPost
 
 - [Blog Folders and Special Files][files]
 - [Blog Configuration Files][config]
@@ -10,7 +8,7 @@
 - [Emoji Support][emojis]
 - [cmdPost Usage Example][example]
 
-## Blog Folders and Special Files
+### Blog Folders and Special Files
 
 Create a folder for your Blog. If you own several blogs, create a separate
 folder for each blog. These folders are known as _blog folders_. There are no
@@ -26,7 +24,7 @@ do not modify or delete this file.
 
 [back to top][top]
 
-## Blog Configuration Files
+### Blog Configuration Files
 
 When cmdPost is executed from the command line, it first checks for the
 existance of a blog configuration file called `blog.cfg` in the current folder.
@@ -89,7 +87,7 @@ the `cmd` prompt window.
 
 [back to top][top]
 
-## Blog Posts
+### Blog Posts
 
 cmdPost expects to find your blog posts in a blog folder.
 Blog posts  are stored  in markdown files, one post per file.
@@ -175,7 +173,7 @@ conversion to HTML.
 
 [back to top][top]
 
-## Passing Shortcodes Through to WordPress.com
+### Passing Shortcodes Through to WordPress.com
 
 A [shortcode] is a WordPress-specific code that allows you to do everything from
 listing source code to embedding a [YouTube] video. WordPress _expands_
@@ -213,7 +211,7 @@ exposes the shortcode for expansion by WordPress.com.
 
 [back to top][top]
 
-## Preventing Autolinking of Email Addresses and URLs
+### Preventing Autolinking of Email Addresses and URLs
 
 WordPress automatically hyperlinks any email addresses or URLs in a blog post
 (except inside a `<pre> ... </pre>` block or between `<code> ... </code>` tags).
@@ -253,7 +251,7 @@ which WordPress will not autolink.
 
 [back to top][top]
 
-## Emoji Support
+### Emoji Support
 
 Support for [emojis][wiki-emoji] is provided by Pandoc's [emoji
 extension][pandoc-emoji]. To insert an emoji, all you have to do is type the
@@ -273,7 +271,7 @@ emojis.
 
 [back to top][top]
 
-## cmdPost Usage Example
+### cmdPost Usage Example
 
 Let's say you've signed up for a free WordPress.com blog with the following
 details:
@@ -342,10 +340,11 @@ Lastly, go to your WordPress.com blog and check that your new post has been publ
 
 [back to top][top]
 
-[back to index][index]
+[&laquo; install][install] | [up]
 
-[index]: ./
+[up]: ./
 [top]: #using-cmdpost
+[install]: install.html
 [wp]: https://wordpress.com/
 [windows]: http://windows.microsoft.com/
 [cmdpost]: https://johnoregan.github.io/cmdPost/

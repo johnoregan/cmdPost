@@ -1,7 +1,7 @@
-# cmdPost Documentation
+## cmdPost Documentation
 
 - [Introduction to cmdPost][intro]
-- [nstalling cmdPost][install]
+- [Installing cmdPost][install]
 - [Using cmdPost][usage]
 
 [intro]: intro.html
