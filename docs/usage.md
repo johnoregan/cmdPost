@@ -125,13 +125,13 @@ most.<br /><br /></dd>
 <dd>A date is required and must be in the format: <code>YYYY/MM/DD hh:mm:ss
 UTC[+-][1-12]</code>
 <ul><li>Seconds (<code>:ss</code>) and UTC offset (<code>UTC[+-][1-12]</code>)
-are optional. If no UTC information is specified, the system's timezone is
+are optional. If no UTC information is specified, the local system's timezone is
 used.</li>
-<li>The year must be a 4-digit number between 1000&emdash;9999.</li>
-<li>The month must be a 2-digit number between 01&emdash;12.</li>
-<li>The date must be a 2-digit number between 01&emdash;31.</li>
-<li>The hour must be a 2-digit number between 00&emdash;23.</li>
-<li>Minutes and seconds must be 2-digit numbers between 00&emdash;59.</li>
+<li>The year must be a 4-digit number between 1000&ndash;9999.</li>
+<li>The month must be a 2-digit number between 01&ndash;12.</li>
+<li>The date must be a 2-digit number between 01&ndash;31.</li>
+<li>The hour must be a 2-digit number between 00&ndash;23.</li>
+<li>Minutes and seconds must be 2-digit numbers between 00&ndash;59.</li>
 <li>UTC on its own is Universal Co-ordinated Time (formerly known as Greenwich
 Mean Time). UTC can be followed by a plus (<code>+</code>) or minus
 (<code>-</code>) and a number between 1 and 12 to specify one of the Earth's 24 timezones.</li></ul></dd>
@@ -158,11 +158,11 @@ formats</a> for more information.<br /><br /></dd>
 href="https://en.support.wordpress.com/post-visibility/#sticky-posts">sticky</a>.<br /><br /></dd>
 
 <dt><code>comments</code> and <code>pingbacks</code></dt>
-<dd><a href="https://en.support.wordpress.com/comments/">Comments</a> nd <a
+<dd><a href="https://en.support.wordpress.com/comments/">Comments</a> and <a
 href="https://en.support.wordpress.com/comments/pingbacks/">pingbacks</a> can
 either be <code>open</code> or <code>closed</code>.<br /><br /></dd>
 
-<dt><code>categories</code> and <code>tags</code>
+<dt><code>categories</code> and <code>tags</code></dt>
 <dd>At least 1 <a href="https://en.support.wordpress.com/posts/categories/">category</a> is
 required. <a href="https://en.support.wordpress.com/posts/tags/">Tags</a> are
 optional, but recommended.</dd></dl>

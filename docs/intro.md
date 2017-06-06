@@ -1,4 +1,4 @@
-## Introduction to cmdPost
+# Introduction to cmdPost
 
 - [What Is cmdPost?][what-is-cmdpost]
 - [What Are the Prerequisites for
@@ -41,7 +41,7 @@ cmdPost requires the following:
 
 - [Markdown]\: If you have a working knowledge of markdown, you can [skip past
   the next section][how-does-cmdpost-work]. If not, then you need to learn it ([see below][what-is-markdown]). The good news is that it&rsquo;s
-  intuitive to use and you can master it in 15&endash;20 minutes.
+  intuitive to use and you can master it in 15&ndash;20 minutes.
 
 [back to top][top]
 
@@ -101,6 +101,8 @@ is assembled into an [XML] document, which is posted to your WordPress.com blog.
 [gruber]: https://en.wikipedia.org/wiki/John_Gruber
 [wikipedia-markdown]: https://en.wikipedia.org/wiki/Markdown
 [markdown-syntax]: https://daringfireball.net/projects/markdown/syntax
+[pandoc]: http://pandoc.org/
+[pandoc-latest]: https://github.com/jgm/pandoc/releases/latest
 [pandocs-markdown]: http://pandoc.org/MANUAL.html#pandocs-markdown
 [tutorial]: http://www.markdowntutorial.com/
 [mome]: http://markdown.pioul.fr/

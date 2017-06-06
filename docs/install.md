@@ -46,16 +46,16 @@ Next, you have to download `cmdPost.zip` and unpack the files it contains:
 - Switch to your browser and download the latest version of cmdPost from this
   URL:
 
-  > https://github.com/johnoregan/cmdPost/releases/latest
+  > <https://github.com/johnoregan/cmdPost/releases/latest>
 
   and save the `cmdPost.zip` file in the `cmdPost` folder you just created.
 
 - Switch back to **Windows Explorer**, open the `cmdPost` folder, select the
   `cmdPost.zip` file, press **\<AppKey>** (or **\<Shift+F10>** on a laptop), and
-  select the **Extract All** item from the context menu.
+  select **Extract All** from the context menu.
 
-- As an optional step, you can create a `blogs` folder inside the `cmdPost`
-  folder. You can think of the `blogs` folder as a home for all your blog files.
+- You may create a `blogs` folder inside the `cmdPost` folder, if you wish. You
+  can think of the `blogs` folder as a home for all your blog files.
 
 [back to top][top]
 
@@ -68,8 +68,8 @@ After that, it&rsquo;s a good idea to add the `cmdPost` folder to your `PATH`:
 - Press **\<WinKey+R>**, type `SystemPropertiesAdvanced`, and press
   **\<Enter>**.
 
-- In the **System Properties** dialog, tab down to the **Environment Variables**
-  button and press **\<Enter>**.
+- In the **System Properties** dialog, tab down to the **Environment
+  Variables** button and press **\<Enter>**.
 
 - In the **User Variables** section of the **Environment Variables** dialog,
   select `PATH` and add `%UserProfile%\cmdPost`. Prepend a semi-colon (`;`) if
@@ -79,7 +79,7 @@ After that, it&rsquo;s a good idea to add the `cmdPost` folder to your `PATH`:
   new one and assign it a value as described above.
 
 - Tab down to the **OK** button and press **\<Enter>** to close the
-  **Environment Variables** dialog. And do the same for the **System
+  **Environment Variables** dialog. And then do the same for the **System
   Properties** dialog.
 
 And that&rsquo;s it! You&rsquo;re now ready to start using cmdPost.
