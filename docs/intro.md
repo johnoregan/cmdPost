@@ -1,3 +1,7 @@
+---
+title: Introduction to cmdPost
+---
+
 # Introduction to cmdPost
 
 - [What Is cmdPost?][what-is-cmdpost]
@@ -6,7 +10,7 @@
 - [What Is Markdown?][what-is-markdown]
 - [How Does cmdPost Work?][how-does-cmdpost-work]
 
-### What Is cmdPost?
+## What Is cmdPost?
 
 cmdPost (pronounced &ldquo;Command Post&rdquo;) is a simple [WordPress.com][wp]
 blogging client run from the [Windows] command line (`cmd`).
@@ -22,7 +26,7 @@ another, or to post to multiple blogs at once.
 
 [back to top][top]
 
-### What Are the Prerequisites for cmdPost?
+## What Are the Prerequisites for cmdPost?
 
 cmdPost requires the following:
 
@@ -45,7 +49,7 @@ cmdPost requires the following:
 
 [back to top][top]
 
-### What Is Markdown?
+## What Is Markdown?
 
 Markdown is a markup language with plain text formatting syntax. It is
 designed to be easily converted into [HTML] and many other formats. In the words
@@ -74,7 +78,7 @@ Happy reading! :eyeglasses:
 
 [back to top][top]
 
-### How Does cmdPost Work?
+## How Does cmdPost Work?
 
 cmdPost opens the markdown file containing your blog post and looks for a
 specially formatted header block at the start of the file. It scans the headers
@@ -88,7 +92,7 @@ is assembled into an [XML] document, which is posted to your WordPress.com blog.
 
 [back to top][top]
 
-[up] | [install &raquo;][install]
+[up] \| [install &raquo;][install]
 
 [top]: #introduction-to-cmdpost
 [up]: ./

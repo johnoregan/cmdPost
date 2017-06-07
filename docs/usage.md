@@ -1,4 +1,8 @@
-## Using cmdPost
+---
+title: Using cmdPost
+---
+
+# Using cmdPost
 
 - [Blog Folders and Special Files][files]
 - [Blog Configuration Files][config]
@@ -8,23 +12,24 @@
 - [Emoji Support][emojis]
 - [cmdPost Usage Example][example]
 
-### Blog Folders and Special Files
+## Blog Folders and Special Files
 
 Create a folder for your Blog. If you own several blogs, create a separate
 folder for each blog. These folders are known as _blog folders_. There are no
-restrictions on blog folder names, but it is recommended that the folder name
-has some similarity to the blog associated with it!
+restrictions on blog folder names, but it is recommended that the name you
+choose as some similarity to the blog associated with it!
 
-Your blog folder must contain a `blog.cfg` file ([described below][config]). It
-is also the location where blog posts are stored in the form of markdown files.
-Each markdown file represents a single blog post. cmdPost also automatically
-creates and updates a hidden file called `posts.log`, which is used to keep
-track of additions and changes to the markdown files in your blog folder. Please
-do not modify or delete this file.
+Your blog folder is the location where blog posts are stored in the form of
+markdown files. Each blog folder must contain a `blog.cfg` file ([described
+below][config]).
+
+cmdPost also automatically creates and updates a hidden file called `posts.log`,
+which is used to keep track of changes to the markdown files in your blog
+folder. Please do not modify or delete this file.
 
 [back to top][top]
 
-### Blog Configuration Files
+## Blog Configuration Files
 
 When cmdPost is executed from the command line, it first checks for the
 existance of a blog configuration file called `blog.cfg` in the current folder.
@@ -82,12 +87,12 @@ attrib +r +h blog.cfg
 Btw, to open the `cmd` prompt (discouraged in Windows 10 :unamused:), press
 **\<Alt+D>** to move to the address bar in **Windows Explorer** (known as **File
 Explorer** in Windows 10), type `cmd`, and press **\<Enter>**. And to close the
-`cmd` prompt when you're finished with it, simply enter the `exit` command in
-the `cmd` prompt window.
+`cmd` prompt when you&rsquo;re finished with it, simply enter the `exit` command
+in the `cmd` prompt window.
 
 [back to top][top]
 
-### Blog Posts
+## Blog Posts
 
 cmdPost expects to find your blog posts in a blog folder.
 Blog posts  are stored  in markdown files, one post per file.
@@ -97,25 +102,25 @@ the header block; and the main content, or _body_.
 
 Header blocks must obey the following rules:
 
-- The header block must be placed at the very start of the markdown file.
-- The header block begins with a line consisting entirely of 3 dashes (`---`).
-- Blank lines are not permitted in the header block.
-- Header names without a header value are not permitted (and vice versa).
-- Each header name and its value must be on a single line.
-- Header names must be between 1 and 20 characters long, begin at the start of
-  the line, and consist entirely of lowercase letters (`a-z`).
-- Header names are separated from their values by a colon (`:`) and 1 or more
-  spaces or tabs.
-- The end of the header block is denoted by a line consisting entirely of 3
-  dashes (`---`).
-- The header block must be separated from the body of the markdown file by at
-  least 1 blank line.
+- the header block must be placed at the very start of the markdown file
+- the header block begins with a line consisting entirely of 3 dashes (`---`)
+- blank lines are not permitted in the header block
+- header names without a header value are not permitted (and vice versa)
+- each header name and its value must be on a single line
+- header names must be between 1 and 20 characters long, begin at the start of
+  the line, and consist entirely of lowercase letters (`a-z`)
+- header names are separated from their values by a colon (`:`) and 1 or more
+  spaces or tabs
+- the end of the header block is denoted by a line consisting entirely of 3
+  dashes (`---`)
+- the header block must be separated from the body of the markdown file by at
+  least 1 blank line
 
 The following header names are permitted:
 
 <dl><dt><code>title</code></dt>
-<dd>A title is required. The title will be used as a heading in a large font
-at the top of your post, so try to keep it to 5 or 6 words (70 characters) at
+<dd>A title is required. The title will be used as a heading in a large font at
+the top of your post, so try to keep it to 5 or 6 words (70 characters) at
 most.<br /><br /></dd>
 
 <dt><code>author</code></dt>
@@ -125,8 +130,8 @@ most.<br /><br /></dd>
 <dd>A date is required and must be in the format: <code>YYYY/MM/DD hh:mm:ss
 UTC[+-][1-12]</code>
 <ul><li>Seconds (<code>:ss</code>) and UTC offset (<code>UTC[+-][1-12]</code>)
-are optional. If no UTC information is specified, the local system's timezone is
-used.</li>
+are optional. If no UTC information is specified, the local system&rsquo;s
+timezone is used.</li>
 <li>The year must be a 4-digit number between 1000&ndash;9999.</li>
 <li>The month must be a 2-digit number between 01&ndash;12.</li>
 <li>The date must be a 2-digit number between 01&ndash;31.</li>
@@ -134,7 +139,8 @@ used.</li>
 <li>Minutes and seconds must be 2-digit numbers between 00&ndash;59.</li>
 <li>UTC on its own is Universal Co-ordinated Time (formerly known as Greenwich
 Mean Time). UTC can be followed by a plus (<code>+</code>) or minus
-(<code>-</code>) and a number between 1 and 12 to specify one of the Earth's 24 timezones.</li></ul></dd>
+(<code>-</code>) and a number between 1 and 12 to specify one of the
+Earth&rsquo;s 24 timezones.</li></ul></dd>
 
 <dt><code>status</code></dt>
 <dd>Valid values for <code>status</code> are:
@@ -145,16 +151,16 @@ Mean Time). UTC can be followed by a plus (<code>+</code>) or minus
 <li><code>trash</code>: move the post to the trash</li></ul></dd>
 
 <dt><code>format</code></dt>
-<dd>Supported values for <code>format</code> are: <code>standard</code>
-(default); <code>aside</code>; <code>audio</code>; <code>chat</code>;
-<code>gallery</code>; <code>image</code>; <code>link</code>;
+<dd>Supported values for <code>format</code> are:
+<code>standard</code> (default); <code>aside</code>; <code>audio</code>;
+<code>chat</code>; <code>gallery</code>; <code>image</code>; <code>link</code>;
 <code>quote</code>; <code>status</code>; and <code>video</code>. Read this
 article on <a href="https://en.support.wordpress.com/posts/post-formats/">post
 formats</a> for more information.<br /><br /></dd>
 
 <dt><code>sticky</code></dt>
-<dd>The <code>sticky</code> header can either have a value of <code>0</code>
-(default) for not sticky, or <code>1</code> for <a
+<dd>The <code>sticky</code> header can either have a value of
+<code>0</code> (default) for not sticky, or <code>1</code> for <a
 href="https://en.support.wordpress.com/post-visibility/#sticky-posts">sticky</a>.<br /><br /></dd>
 
 <dt><code>comments</code> and <code>pingbacks</code></dt>
@@ -173,12 +179,12 @@ conversion to HTML.
 
 [back to top][top]
 
-### Passing Shortcodes Through to WordPress.com
+## Passing Shortcodes Through to WordPress.com
 
 A [shortcode] is a WordPress-specific code that allows you to do everything from
-listing source code to embedding a [YouTube] video. WordPress _expands_
-shortcodes into HTML (ie, it replaces a shortcode with HTML relevant to a
-specific shortcode). Below is an example of a YouTube shortcode:
+listing source code to embedding a [YouTube] video. WordPress.com
+_expands_ shortcodes into HTML (ie, it replaces a shortcode with HTML relevant
+to a specific shortcode). Below is an example of a YouTube shortcode:
 
 ```
 [youtube https://www.youtube.com/watch?v=_htxLyl9pqg]
@@ -205,17 +211,17 @@ Pandoc ignores the contents of the HTML comment and passes it through unchanged.
 `<!-- shortcode` and `/shortcode -->` must be on lines by themselves as in the
 above example.
 
-cmdPost reads in Pandoc's HTML output, optimises it for WordPress.com, and
+cmdPost reads in Pandoc&rsquo;s HTML output, optimises it for WordPress.com, and
 strips out all occurrences of the opening and closing comment tags, which
 exposes the shortcode for expansion by WordPress.com.
 
 [back to top][top]
 
-### Preventing Autolinking of Email Addresses and URLs
+## Preventing Autolinking of Email Addresses and URLs
 
-WordPress automatically hyperlinks any email addresses or URLs in a blog post
-(except inside a `<pre> ... </pre>` block or between `<code> ... </code>` tags).
-For example:
+WordPress.com automatically hyperlinks any email addresses or URLs in a blog
+post (except inside a `<pre> ... </pre>` block or between
+`<code> ... </code>` tags). For example:
 
 ```
 someone@example.com
@@ -247,51 +253,50 @@ This will pass through Pandoc unchanged. cmdPost then changes `&amp;` back to
 someone&#64;example.com
 ```
 
-which WordPress will not autolink.
+which WordPress.com will not autolink.
 
 [back to top][top]
 
-### Emoji Support
+## Emoji Support
 
-Support for [emojis][wiki-emoji] is provided by Pandoc's [emoji
+Support for [emojis][wiki-emoji] is provided by Pandoc&rsquo;s [emoji
 extension][pandoc-emoji]. To insert an emoji, all you have to do is type the
 name of an emoji (in lowercase letters) between two colons. For example:
 
-- &#58;smile&#58; becomes :smile:
-- &#58;frog&#58; becomes :frog:
-- &#58;bathtub&#58; becomes :bathtub:
+- \:smile\: becomes :smile:
+- \:frog\: becomes :frog:
+- \:bathtub\: becomes :bathtub:
 
-Pandocc will substitute the emoji name for the emoji it represents. In the
-unlikely event you want to write a literal string like `&#58;helicopter&#58;`,
-simply escape the colons with backslashes like so:
-`&#92;&#58;helicopter&#92;&#58;`
+Pandoc will substitute the emoji name for the emoji it represents. In the
+unlikely event you want to write a literal string like `:helicopter:`, simply
+escape the colons with backslashes like so: `\:helicopter\:`
 
 Refer to this [Emoji Cheat Sheet][emoji-cheat-sheet] for a list of supported
 emojis.
 
 [back to top][top]
 
-### cmdPost Usage Example
+## cmdPost Usage Example
 
-Let's say you've signed up for a free WordPress.com blog with the following
-details:
+Let&rsquo;s say you&rsquo;ve signed up for a free WordPress.com blog with the
+following details:
 
 - username: `john`
-- password: `John'sPa$$word#17`
+- password: `John&rsquo;sPa$$word#17`
 - URL: `https://johnsjournal.wordpress.com/`.
 
 Please note that this is a fictitious example and any resemblance to real
 usernames or URLs is coincidental.
 
-First, create a folder called `John's Journal`, or `johnsjournal`, or just `jj`
-if you like. Just so long as the name of the folder is enough to remind you of
-the blog it is associated with.
+First, create a folder called `John&rsquo;s Journal`, or `johnsjournal`, or just
+`jj` if you like. Just so long as the name of the folder is enough to remind you
+of the blog it is associated with.
 
 Next, create a `blog.cfg` file in your blog folder with the following contents:
 
 ```
 username: john
-password: John'sPa$$word#17
+password: John&rsquo;sPa$$word#17
 endpoint: https://johnsjournal.wordpress.com/xmlrpc.php
 ```
 
@@ -301,7 +306,7 @@ post like this:
 ```
 ---
 title: Test Post
-date: 2017/04/31 14:30:00
+date: 2017/06/07 16:30:00
 status: publish
 categories: Announcements
 tags: cmdpost, more tag, test post, wordpress.com
@@ -311,7 +316,7 @@ This is a test post to check that cmdPost is set up correctly and working
 properly.
 
 Only content before the [`<!--more-->` tag][more-tag-help] will be displayed on
-the blog's front page...
+the blog&rsquo;s front page...
 
 <!--more more &raquo;-->
 
@@ -340,7 +345,7 @@ Lastly, go to your WordPress.com blog and check that your new post has been publ
 
 [back to top][top]
 
-[&laquo; install][install] | [up]
+[&laquo; install][install] \| [up]
 
 [up]: ./
 [top]: #using-cmdpost

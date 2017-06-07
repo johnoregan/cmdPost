@@ -1,11 +1,15 @@
-## Installing cmdPost
+---
+title: Installing cmdPost
+---
+
+# Installing cmdPost
 
 - [Keyboard Shortcuts][shortcuts]
 - [Making a Home for cmdPost][cmdpost-home]
 - [Downloading and Unpacking `cmdPost.zip`][download]
 - [Adding cmdPost to the `PATH`][path]
 
-### Keyboard Shortcuts
+## Keyboard Shortcuts
 
 Please note that in the following sections:
 
@@ -25,7 +29,7 @@ keyboard shortcuts][WinKbdShortcuts] for Windows XP and later to get started.
 
 [back to top][top]
 
-### Making a Home for cmdPost
+## Making a Home for cmdPost
 
 Before you can download cmdPost, you must first make a home for it:
 
@@ -39,7 +43,7 @@ Before you can download cmdPost, you must first make a home for it:
 
 [back to top][top]
 
-### Downloading and Unpacking `cmdPost.zip`
+## Downloading and Unpacking `cmdPost.zip`
 
 Next, you have to download `cmdPost.zip` and unpack the files it contains:
 
@@ -54,12 +58,12 @@ Next, you have to download `cmdPost.zip` and unpack the files it contains:
   `cmdPost.zip` file, press **\<AppKey>** (or **\<Shift+F10>** on a laptop), and
   select **Extract All** from the context menu.
 
-- You may create a `blogs` folder inside the `cmdPost` folder, if you wish. You
+- You may create a `blogs` folder inside the `cmdPost` folder if you wish. You
   can think of the `blogs` folder as a home for all your blog files.
 
 [back to top][top]
 
-### Adding cmdPost to the `PATH`
+## Adding cmdPost to the `PATH`
 
 After that, it&rsquo;s a good idea to add the `cmdPost` folder to your `PATH`:
 
@@ -86,7 +90,7 @@ And that&rsquo;s it! You&rsquo;re now ready to start using cmdPost.
 
 [back to top][top]
 
-[&laquo; intro][intro] | [up] | [usage &raquo;][usage]
+[&laquo; intro][intro] \| [up] \| [usage &raquo;][usage]
 
 [top]: #installing-cmdpost
 [up]: ./
