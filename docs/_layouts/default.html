@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="US-ASCII">
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<title>{{ page.title }}</title>
+<link rel="stylesheet" href="{{ '/assets/css/style.css?v=' | append: site.github.build_revision | relative_url }}">
+<meta name="viewport" content="width=device-width">
+<!--[if lt IE 9]>
+<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+</head>
+
+<body><div class="wrapper">
+<header>
+<h1>{{ page.title }}</h1>
+</header>
+
+<section>
+{{ content }}
+</section>
+
+<footer>
+{% if site.github.is_project_page %}
+<p><a href="{{ site.github.repository_url }}">{{ site.github.repository_name }}</a> is
+maintained by <a href="{{ site.github.owner_url }}">John O&rsquo;Regan</a></p>
+
+{% endif %}
+<p><small>Hosted on <a href="https://pages.github.com/">GitHub Pages</a> &mdash;
+Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+</footer></div>
+<script src="{{ '/assets/js/scale.fix.js' | relative_url }}"></script>
+</body></html>

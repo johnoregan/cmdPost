@@ -17,7 +17,7 @@ title: Using cmdPost
 Create a folder for your Blog. If you own several blogs, create a separate
 folder for each blog. These folders are known as _blog folders_. There are no
 restrictions on blog folder names, but it is recommended that the name you
-choose as some similarity to the blog associated with it!
+choose has some similarity to the blog associated with it!
 
 Your blog folder is the location where blog posts are stored in the form of
 markdown files. Each blog folder must contain a `blog.cfg` file ([described
@@ -263,13 +263,16 @@ Support for [emojis][wiki-emoji] is provided by Pandoc&rsquo;s [emoji
 extension][pandoc-emoji]. To insert an emoji, all you have to do is type the
 name of an emoji (in lowercase letters) between two colons. For example:
 
-- \:smile\: becomes :smile:
-- \:frog\: becomes :frog:
-- \:bathtub\: becomes :bathtub:
+- `:smile:` becomes :smile:
+- `:frog:` becomes :frog:
+- `:bathtub:` becomes :bathtub:
 
 Pandoc will substitute the emoji name for the emoji it represents. In the
 unlikely event you want to write a literal string like `:helicopter:`, simply
 escape the colons with backslashes like so: `\:helicopter\:`
+
+Emoji substitutions will not be made inside a [code block][verbatim-blocks], or
+[inline verbatim text][verbatim-inline].
 
 Refer to this [Emoji Cheat Sheet][emoji-cheat-sheet] for a list of supported
 emojis.
@@ -327,7 +330,24 @@ Happy blogging! :smile:
 [more-tag-help]: https://en.support.wordpress.com/more-tag/
 ```
 
-save the file as `testpost.md` and enter the following at the `cmd` prompt:
+save the file as `testpost.md`.
+
+If you want to preview `testpost.md` before posting it  with cmdPost, enter:
+
+```
+postprev testpost.md
+```
+
+at the `cmd` prompt.
+
+An HTML preview of `testpost.md` should open in your default browser. It
+won&rsquo;t be an exact replica of how the post will appear on WordPress.com,
+but it will give you some idea of what the final result will look like, and
+gives you the chance to correct any mistakes in your markdown, spelling errors,
+poor grammar, etc.
+
+When you&rsquo;re satisfied that `testpost.md` is ready for posting, enter the
+following at the `cmd` prompt:
 
 ```
 cmdPost testpost.md
@@ -363,6 +383,8 @@ Lastly, go to your WordPress.com blog and check that your new post has been publ
 [emoji-cheat-sheet]: https://www.webpagefx.com/tools/emoji-cheat-sheet/
 [pandoc-emoji]: http://pandoc.org/MANUAL.html#extension-emoji
 [wiki-emoji]: https://en.wikipedia.org/wiki/Emoji
+[verbatim-blocks]: http://pandoc.org/MANUAL.html#verbatim-code-blocks
+[verbatim-inline]: http://pandoc.org/MANUAL.html#verbatim
 [files]: #blog-folders-and-special-files
 [config]: #blog-configuration-files
 [posts]: #blog-posts
