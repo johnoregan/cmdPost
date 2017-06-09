@@ -2,8 +2,6 @@
 title: Introduction to cmdPost
 ---
 
-# Introduction to cmdPost
-
 - [What Is cmdPost?][what-is-cmdpost]
 - [What Are the Prerequisites for
   cmdPost?][cmdpost-prerequisites]
