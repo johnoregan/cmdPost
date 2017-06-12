@@ -2,7 +2,7 @@
 title: Installing cmdPost
 ---
 
-# Installing cmdPost
+## Contents
 
 - [Keyboard Shortcuts][shortcuts]
 - [Making a Home for cmdPost][cmdpost-home]
@@ -67,7 +67,7 @@ Next, you have to download `cmdPost.zip` and unpack the files it contains:
 
 After that, it&rsquo;s a good idea to add the `cmdPost` folder to your `PATH`:
 
-- Make sure all `cmd` prompt windows are closed.
+- Make sure all cmd prompt windows are closed.
 
 - Press **\<WinKey+R>**, type `SystemPropertiesAdvanced`, and press
   **\<Enter>**.
@@ -90,12 +90,7 @@ And that&rsquo;s it! You&rsquo;re now ready to start using cmdPost.
 
 [back to top][top]
 
-[&laquo; intro][intro] \| [up] \| [usage &raquo;][usage]
-
-[top]: #installing-cmdpost
-[up]: ./
-[intro]: intro.html
-[usage]: usage.html
+[top]: #top
 [WinKbdShortcuts]: https://shortcutworld.com/en/Windows
 [shortcuts]: #keyboard-shortcuts
 [cmdpost-home]: #making-a-home-for-cmdpost

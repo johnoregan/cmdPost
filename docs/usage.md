@@ -2,7 +2,7 @@
 title: Using cmdPost
 ---
 
-# Using cmdPost
+## Contents
 
 - [Blog Folders and Special Files][files]
 - [Blog Configuration Files][config]
@@ -78,17 +78,17 @@ message.
 
 Once you have created the `blog.cfg` file for the current folder, and are
 satisfied it is formatted correctly, it is recommended that you make the file
-read-only and hidden by entering the following command from the `cmd` prompt:
+read-only and hidden by entering the following command from the cmd prompt:
 
 ```
 attrib +r +h blog.cfg
 ```
 
-Btw, to open the `cmd` prompt (discouraged in Windows 10 :unamused:), press
+Btw, to open the cmd prompt (discouraged in Windows 10 :unamused:), press
 **\<Alt+D>** to move to the address bar in **Windows Explorer** (known as **File
 Explorer** in Windows 10), type `cmd`, and press **\<Enter>**. And to close the
-`cmd` prompt when you&rsquo;re finished with it, simply enter the `exit` command
-in the `cmd` prompt window.
+cmd prompt when you&rsquo;re finished with it, simply enter the `exit` command
+in the cmd prompt window.
 
 [back to top][top]
 
@@ -338,7 +338,7 @@ If you want to preview `testpost.md` before posting it  with cmdPost, enter:
 postprev testpost.md
 ```
 
-at the `cmd` prompt.
+at the cmd prompt.
 
 An HTML preview of `testpost.md` should open in your default browser. It
 won&rsquo;t be an exact replica of how the post will appear on WordPress.com,
@@ -347,7 +347,7 @@ gives you the chance to correct any mistakes in your markdown, spelling errors,
 poor grammar, etc.
 
 When you&rsquo;re satisfied that `testpost.md` is ready for posting, enter the
-following at the `cmd` prompt:
+following at the cmd prompt:
 
 ```
 cmdPost testpost.md
@@ -365,14 +365,9 @@ Lastly, go to your WordPress.com blog and check that your new post has been publ
 
 [back to top][top]
 
-[&laquo; install][install] \| [up]
-
-[up]: ./
-[top]: #using-cmdpost
-[install]: install.html
+[top]: #top
 [wp]: https://wordpress.com/
 [windows]: http://windows.microsoft.com/
-[cmdpost]: https://johnoregan.github.io/cmdPost/
 [markdown]: http://daringfireball.net/projects/markdown/
 [pandoc]: http://www.pandoc.org/
 [html]: http://www.w3.org/html/

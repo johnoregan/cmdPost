@@ -2,27 +2,12 @@
 title: Introduction to cmdPost
 ---
 
-- [What Is cmdPost?][what-is-cmdpost]
+## Contents
+
 - [What Are the Prerequisites for
   cmdPost?][cmdpost-prerequisites]
 - [What Is Markdown?][what-is-markdown]
 - [How Does cmdPost Work?][how-does-cmdpost-work]
-
-## What Is cmdPost?
-
-cmdPost (pronounced &ldquo;Command Post&rdquo;) is a simple [WordPress.com][wp]
-blogging client run from the [Windows] command line (`cmd`).
-
-cmdPost is capable of creating new blog posts, or updating existing ones. In the
-latter case, only the details that have changed since the last update will be
-uploaded.
-
-cmdPost enables you to keep a copy of your blog posts on your local system. This
-allows you to edit posts offline and upload the changes later. It also has the
-advantage of making it easier for you to migrate from one blog host to
-another, or to post to multiple blogs at once.
-
-[back to top][top]
 
 ## What Are the Prerequisites for cmdPost?
 
@@ -33,9 +18,8 @@ cmdPost requires the following:
 - [WordPress.com][wp]: You must own (or be able to post to) a WordPress.com
   blog. You can either sign up for a free [WordPress.com username and
   blog][signup-blog], or just a [WordPress.com username][signup-user] (you can
-  always create a blog later). Choose the latter if you&rsquo;re joining a
-  multiple-user blog, or if you&rsquo;re not interested in owning a blog, but
-  want to follow WordPress.com blogs, leave comments, and post in the forums.
+  always create a blog later). Choose the latter if you&rsquo;re joining an
+  existing multiple-user blog.
 
 - [Pandoc]\: cmdPost uses Pandoc to convert documents written in markdown (see
   next) into [HTML]. If Pandoc is not already installed on your system,
@@ -90,11 +74,7 @@ is assembled into an [XML] document, which is posted to your WordPress.com blog.
 
 [back to top][top]
 
-[up] \| [install &raquo;][install]
-
-[top]: #introduction-to-cmdpost
-[up]: ./
-[install]: install.html
+[top]: #top
 [wp]: https://wordpress.com/
 [windows]: http://windows.microsoft.com/
 [markdown]: http://daringfireball.net/projects/markdown/
@@ -110,7 +90,6 @@ is assembled into an [XML] document, which is posted to your WordPress.com blog.
 [mome]: http://markdown.pioul.fr/
 [signup-blog]: https://signup.wordpress.com/signup/?domain=1
 [signup-user]: https://signup.wordpress.com/signup/?user=1
-[what-is-cmdpost]: #what-is-cmdpost
 [cmdpost-prerequisites]: #what-are-the-prerequisites-for-cmdpost
 [what-is-markdown]: #what-is-markdown
 [how-does-cmdpost-work]: #how-does-cmdpost-work

@@ -12,12 +12,13 @@
 
 <body><div class="wrapper">
 <header>
-<h1 id="top">{{ page.title }}</h1>
+<h1 id="top" style="text-align:center;">{{ page.title }}</h1>
 
 <p style="text-align:center;"><a href="./">home</a> |
+<a href="intro.html">intro</a> |
 <a href="install.html">install</a> |
 <a href="usage.html">usage</a> |
-<a href="contact.html">contact</a></p>
+<a href="others.html">others</a></p>
 </header>
 
 <section>
@@ -25,6 +26,12 @@
 </section>
 
 <footer>
+<p style="text-align:center;"><a href="./">home</a> |
+<a href="intro.html">intro</a> |
+<a href="install.html">install</a> |
+<a href="usage.html">usage</a> |
+<a href="others.html">others</a></p>
+
 {% if site.github.is_project_page %}
 <p><a href="{{ site.github.repository_url }}">{{ site.github.repository_name }}</a> is
 maintained by <a href="{{ site.github.owner_url }}">John O&rsquo;Regan</a></p>
