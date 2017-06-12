@@ -4,8 +4,8 @@ title: cmdPost &mdash; a Windows command line blogging client for WordPress.com
 
 ## What Is cmdPost?
 
-cmdPost (pronounced &ldquo;Command Post&rdquo;) is a [WordPress.com][wp]
-blogging client run from the [Windows] command line (cmd prompt).
+cmdPost (pronounced &ldquo;Command Post&rdquo;) is a
+[WordPress.com][wp] blogging client run from the [Windows] command line (cmd prompt).
 
 cmdPost is capable of creating new blog posts, or updating existing ones. In the
 latter case, only the details that have changed since the last update will be
@@ -56,7 +56,7 @@ Feel free to give me your feedback. You can:
 
 <ul><li><a href="https://github.com/johnoregan/cmdPost/issues">create an
 issue</a> on <a href="https://github.com/">GitHub</a></li>
-<li>reach me <a href="https://twitter.com/JohnAORegan">@JohnAORegan>/a> on <a
+<li>reach me <a href="https://twitter.com/JohnAORegan">@JohnAORegan</a> on <a
 href="https://twitter.com/">Twitter</a></li>
 <li>send me an <a href="http://tinyurl.com/em4jaor" rel="noopener noreferrer"
 target="_blank">email</a> (solve <a
