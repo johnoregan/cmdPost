@@ -39,7 +39,8 @@ goto die) %= if 2 =%
 ) %= if 1 =%
 
 :: create posts.log file if it doesn't exist
-set "logFile=posts.log" & if not exist "%logFile%" (
+set "logFile=posts.log"
+if not exist "%logFile%" (
 2>nul (type nul >"%cd%\%logFile%") && attrib +h "%logFile%" || (
 >&2 echo(could not create "%logFile%" in "%cd%" & goto die) %= cond exec =%
 ) %= if =%

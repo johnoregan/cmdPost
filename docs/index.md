@@ -52,21 +52,22 @@ technical know-how.
 
 ## Contact
 
-Feel free to give me your feedback. You can:
+Please give me your feedback. Feel free to:
 
 <ul><li><a href="https://github.com/johnoregan/cmdPost/issues">create an
 issue</a> on <a href="https://github.com/">GitHub</a></li>
 <li>reach me <a href="https://twitter.com/JohnAORegan">@JohnAORegan</a> on <a
 href="https://twitter.com/">Twitter</a></li>
 <li>send me an <a href="http://tinyurl.com/em4jaor" rel="noopener noreferrer"
-target="_blank">email</a> (solve <a
-href="https://www.google.com/recaptcha/admin#mailhide">reCAPTCHA</a> to reveal address)</li></ul>
+target="_blank">email</a> (solve the <a
+href="https://www.google.com/recaptcha/admin#mailhide">reCAPTCHA</a> to reveal
+email address)</li></ul>
 
 I look forward to hearing from you! :smile:
 
 [back to top][top]
 
-## Legal Notices
+## Legal
 
 [cmdPost] is released under the [MIT Licence][mit-licence].
 
