@@ -2,6 +2,10 @@
 title: cmdPost &mdash; a Windows command line blogging client for WordPress.com
 ---
 
+## News
+
+- **2017/06/14:** [cmdPost 0.1][v0-1] released! :sunglasses:
+
 ## What Is cmdPost?
 
 cmdPost (pronounced &ldquo;Command Post&rdquo;) is a
@@ -80,6 +84,7 @@ Copyright &copy; 2017 [John O&rsquo;Regan][jor]
 [install]: install.html
 [usage]: usage.html
 [others]: others.html
+[v0-1]: https://github.com/johnoregan/cmdPost/releases/download/v0.1/cmdPost.zip
 [wp]: https://wordpress.com/
 [windows]: http://windows.microsoft.com/
 [pandoc]: http://pandoc.org/
