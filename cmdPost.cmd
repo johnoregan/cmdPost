@@ -708,11 +708,13 @@ function mkd2HTML(filename) {
         .replace(
             /(<\/(?:blockquote|div|dl|h[1-6]|ol|p|pre|table|tr|ul)>|-->)\n+/ig,
             '$1\n\n')
-        // ensure 2 newlines after paragraphs wrapped inside list items/data definitions
+        // ensure 2 newlines after paragraphs wrapped inside list items
+        // or data definitions
         .replace(/(<\/p(?:re)?><\/(?:li|dd)>)\n+/ig, '$1\n\n')
-        // remove "<!-- shortcode" and "/shortcode -->" comments
-        .replace(/\n[ \t]*<!--[ \t]*shortcode[ \t]*\n/ig, '\n')
-        .replace(/\n[ \t]*\/shortcode[ \t]*-->[ \t]*\n/ig, '\n')
+        // remove "<!-- shortcode ... /shortcode -->" comments
+        .replace(
+            /<!--(?:[ \t\n]+)?shortcode(?:[ \t\n]+)?((?:.+)?)(?:[ \t\n]+)?\/shortcode(?:[ \t\n]+)?-->/ig,
+            '$1')
         // strip any leading or trailing newlines
         .replace(/^(?:[ \t]*\n)+|(?:[ \t]*\n)+$/g, '');
     // prevents inline code fragments from wrapping

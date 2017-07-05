@@ -190,8 +190,8 @@ to a specific shortcode). Below is an example of a YouTube shortcode:
 [youtube https://www.youtube.com/watch?v=_htxLyl9pqg]
 ```
 
-Shortcodes must be on a line by themselves. This is a problem because Pandoc
-knows nothing of shortcodes and treats the above example as a paragraph,
+Most shortcodes must be on a line by themselves. This is a problem because
+Pandoc knows nothing of shortcodes and treats the above example as a paragraph,
 converting it into the following HTML:
 
 ```
@@ -208,12 +208,25 @@ comment as in this example:
 ```
 
 Pandoc ignores the contents of the HTML comment and passes it through unchanged.
-`<!-- shortcode` and `/shortcode -->` must be on lines by themselves as in the
-above example.
+
+Please note that `<!-- shortcode` and `/shortcode -->` don&rsquo;t necessarily
+have to be on separate lines as in the above example. In fact, they can be
+placed _inline_ to accommodate the [LaTeX shortcode][latex] used by
+[WordPress.com][wp]. For example:
+
+```
+The solution to
+<!-- shortcode $latex \sqrt{x} = 5$
+/shortcode --> is <!-- shortcode
+$latex x=25$ /shortcode -->.
+```
 
 cmdPost reads in Pandoc&rsquo;s HTML output, optimises it for WordPress.com, and
 strips out all occurrences of the opening and closing comment tags, which
 exposes the shortcode for expansion by WordPress.com.
+
+Shortcode comments will not work inside a [code block][verbatim-blocks], or
+[inline verbatim text][verbatim-inline].
 
 [back to top][top]
 
@@ -375,6 +388,7 @@ Lastly, go to your WordPress.com blog and check that your new post has been publ
 [shortcode]: https://en.support.wordpress.com/shortcodes/
 [YouTube]: https://www.youtube.com/
 [XmlRpcEndpoint]: https://codex.wordpress.org/XML-RPC_Support
+[LaTeX]: https://en.support.wordpress.com/latex/
 [emoji-cheat-sheet]: https://www.webpagefx.com/tools/emoji-cheat-sheet/
 [pandoc-emoji]: http://pandoc.org/MANUAL.html#extension-emoji
 [wiki-emoji]: https://en.wikipedia.org/wiki/Emoji

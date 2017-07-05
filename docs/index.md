@@ -4,7 +4,10 @@ title: cmdPost &mdash; a Windows command line blogging client for WordPress.com
 
 ## News
 
-- **2017/06/14:** [cmdPost 0.1][v0-1] released! :sunglasses:
+- **2017/06/14:** cmdPost 0.1 released! :sunglasses:
+
+- **2017/07/05:** [v0.1.1][v0-1-1] allows inline `<!-- shortcode ... /shortcode -->` comments to accommodate the [LaTeX shortcode][latex] used by [WordPress.com][wp].
+Thanks to [@dt_Vic][vic] for raising this issue.
 
 ## What Is cmdPost?
 
@@ -84,8 +87,10 @@ Copyright &copy; 2017 [John O&rsquo;Regan][jor]
 [install]: install.html
 [usage]: usage.html
 [others]: others.html
-[v0-1]: https://github.com/johnoregan/cmdPost/releases/download/v0.1/cmdPost.zip
+[v0-1-1]: https://github.com/johnoregan/cmdPost/releases/download/v0.1.1/cmdPost.zip
+[LaTeX]: https://en.support.wordpress.com/latex/
 [wp]: https://wordpress.com/
+[vic]: https://twitter.com/dt_Vic
 [windows]: http://windows.microsoft.com/
 [pandoc]: http://pandoc.org/
 [markdown]: http://daringfireball.net/projects/markdown/

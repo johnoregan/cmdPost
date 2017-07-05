@@ -50,7 +50,7 @@ Next, you have to download `cmdPost.zip` and unpack the files it contains:
 - Switch to your browser and download the latest version of cmdPost from this
   URL:
 
-  > <https://github.com/johnoregan/cmdPost/releases/download/v0.1/cmdPost.zip>
+  > <https://github.com/johnoregan/cmdPost/releases/download/v0.1.1/cmdPost.zip>
 
   and save the `cmdPost.zip` file in the `cmdPost` folder you just created.
 
