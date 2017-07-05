@@ -1,0 +1,9 @@
+cmdPost Release History
+=======================
+
+2017/06/14: v0.1
+  - initial release
+2017/07/05: v0.1.1
+  - <!-- shortcode ... /shortcode --> comments can now be used inline to
+    accommodate WordPress.com's $latex ... $ shortcode.  Thanks to @dt_Vic for
+    raising this issue.
